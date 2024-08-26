@@ -11,7 +11,7 @@ def between(fieldValue: str, bothCompareValues: str):
     return int(fieldValue) >= int(a) and int(fieldValue) <= int(b)
 
 
-evaulators = {
+evaluators = {
             ">": lambda x, y:int(x) > int(y),
             "<": lambda x, y: int(x) < int(y),
             "=": lambda x, y: int(x) == int(y),
