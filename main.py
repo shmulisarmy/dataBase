@@ -4,12 +4,14 @@ from sortedcontainers import SortedDict
 
 class table:
     def __init__(self, **columns: dict[str, int]):
+        """for each key in columns, add a column with the desired length of the value"""
         self.data: list[list] = []
         self.columns: dict[str, int] = {}
         self.columnsLengthList: list[int] = []
         self.fieldIdexs: dict[str, int] = {}
         self.indexedColumns: dict[int, str] = {}
         self.mappedColumns: dict[str, dict[str, list[int]]] = SortedDict()
+        self.defuaults: dict[str, str] = {}
         self.rowCount: int = 0
         for field in columns:
             self.add_column(field, columns[field])
@@ -35,7 +37,10 @@ class table:
             
         for field in self.columns:
             if field not in fields:
-                raise Exception(f"Column {field} does not exist")
+                if field not in self.defuaults:
+                    raise Exception(f"Column {field} does not exist")
+                fields[field] = self.defuaults[field]
+                
             
         self.rowCount += 1
         id = self.rowCount
@@ -78,7 +83,7 @@ class table:
             return validationString == value
         
         operator, compareValue = validationString.split(" ", maxsplit=1)
-        func = utils.switch[operator]
+        func = utils.evaulators[operator]
         return func(value, compareValue)
         
 
@@ -124,8 +129,53 @@ class table:
                 returnValue[-1].append(selectingFrom[id][self.fieldIdexs[field]])
 
         return returnValue
+    
+    def update(self, changeTo: dict[str, str], **wheres: dict[str, str]) -> int:
+        for field in changeTo:
+            field: str
+            if not self.allowedField(field):
+                raise Exception(f"Column {field} does not exist")
+
+        for field in wheres:
+            if not self.allowedField(field):
+                raise Exception(f"Column {field} does not exist")
+            
+
+
         
-users = table(name = 10, age = 3, email = 30, city = 20, country = 20, worth = 10)
+        if self.mappedColumns:
+            #the smaller we can reduce the amount of data we need to search the better
+            FirstSearchFieldCanidates = filter(lambda x: x in wheres and not table.isExpression(wheres[field]), self.mappedColumns.keys())
+            FirstSearchFieldCanidates = list(FirstSearchFieldCanidates)
+            def findLength(x):
+                Map = self.mappedColumns[x]
+                value = wheres[x]
+                f = Map[value]
+                return len(f)
+            if not FirstSearchFieldCanidates:
+                selectingFrom = self.data
+            else:
+                bestFirstSearchField = min(FirstSearchFieldCanidates, key=findLength)
+                selectingFrom = self.mappedColumns[bestFirstSearchField][wheres[bestFirstSearchField]]        
+        
+        
+        idsOfUpdateRows: list[int] = []
+
+        for row in selectingFrom:
+            if all(table.validField(wheres[field], row[self.fieldIdexs[field]]) for field in wheres):
+                idsOfUpdateRows.append(selectingFrom.index(row))
+
+        for id in idsOfUpdateRows:
+            for field in changeTo:
+                row = self.data[id]
+                row[self.fieldIdexs[field]] = changeTo[field]
+                
+        return len(idsOfUpdateRows)
+
+        
+parties = table(name = 10, people_in_party = 3)
+users = table(name = 10, age = 3, email = 30, city = 20, country = 20, worth = 10, __part__id = 3)
+users.defuaults = {"age": "0", "worth": "0", "__part__id": "1"}
 users.mapColumn("name")
 users.mapColumn("age")
 users.mapColumn("worth")
@@ -137,4 +187,7 @@ users.add_row(name = "Bob", age = "40", email = "Xqg5v@example.com", city = "Par
 
 
 
-print(users.select("name", "age", age = ">< 10 and 300", worth = "> 3000", orderBy="worth"))
+print(users.update({"age": "30000"}, worth = "> 3000"))
+
+
+print(users.select("name", "age", worth = "> 3000", orderBy="worth"))
