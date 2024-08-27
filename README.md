@@ -13,6 +13,6 @@ As of now this project is just a proof concept (written in python), when the pro
 
 
 ## Not done
-- [] table Joins
-- [] select by in (eg "value in (1, 2, 3, 4)")
+- [ ] table Joins
+- [ ] select by in (eg "value in (1, 2, 3, 4)")
 
