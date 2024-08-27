@@ -15,4 +15,14 @@ As of now this project is just a proof concept (written in python), when the pro
 ## Not done
 - [ ] table Joins
 - [ ] select by in (eg "value in (1, 2, 3, 4)")
+- [ ] stringParser (not even sure if im going to make one)
+
+# Run commands
+```bash
+
+git clone https://github.com/shmulisarmy/dataBase/edit/main/README.md
+cd dataBase
+python3 main.py
+
+```
 
