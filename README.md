@@ -6,10 +6,10 @@ As of now this project is just a proof concept (written in python), when the pro
 
 
 ## Done
--[x] add row
--[x] add collumn
--[x] select
--[x] udpate
+- [x] add row
+- [x] add collumn
+- [x] select
+- [x] udpate
 
 
 ## Not done
