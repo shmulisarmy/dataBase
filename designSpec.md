@@ -12,15 +12,23 @@ Once that’s done the non join (minimal change affected and affecting) rows wil
 
 
 
+
+
 ## Get newest flag 
 
 Although the rows in this round are not interlocked/depent on other rows (and there by won’t be affected by other rows getting updated (both in their table and in any other)) if the user has the “Get newest” flag on then extra work will be put in to make sure they have the newest data they can get
 
 
 
+
+
 # Execution plan 
 
+
+
+
 ## non Table Join and non Graph linked update queries
+
 
 while first checking each one in a set if thev'e changed to wich they will be revalidated 
 
@@ -30,11 +38,19 @@ And after wards they will revalidate ones they missed that were updated in that 
 Rows with the “get newest” flag will run after regular rows in order of the amount of rows that they need to update (as is known before running the revalidation)
 
 
+
+
 ## table join update queries
+
 these will run one at a time 
 
 
+
+
+
 # Query planning
+
+
 
 There are many different ways to validate a row for selection or updating and depending on how you plan to validate will your rows will affect the Query planning process
 
@@ -42,26 +58,26 @@ There are many different ways to validate a row for selection or updating and de
 Cell validation types
 
 
-== 
+### == 
 
 Can only validate one at a time  (can’t validate based order, is exact)
 
 
-=> 
+### => 
 
 •⁠  ⁠[ ] Comes back with many results 
 •⁠  ⁠[ ] Automatic ordering 
 •⁠  ⁠[ ] Can validate many rows at the same time (if in index map)
 
 
-SearchTree[“he”] -> [“help”, “hello”]
+### SearchTree[“he”] -> [“help”, “hello”]
 
 Can collect many at a time (if is first part of the query plan)
 
 Limits down to a few options
 
 
-SearchTree[“he”, excusable=1]-> [“hello”, “help”, “hi”]
+### SearchTree[“he”, excusable=1]-> [“hello”, “help”, “hi”]
 
 Can collect many at a time (if is first part of the query plan)
 
