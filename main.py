@@ -1,6 +1,8 @@
 import utils
 from sortedcontainers import SortedDict
 from typing import Dict, List, Optional, Union
+from search_tree_data_structure import SearchTree
+
 
 
 class Table:

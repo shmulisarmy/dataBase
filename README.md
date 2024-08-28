@@ -22,6 +22,8 @@ As of now this project is just a proof concept (written in python), when the pro
 
 git clone https://github.com/shmulisarmy/dataBase/edit/main/README.md
 cd dataBase
+pip install -r requirements.txt
+git clone https://github.com/shmulisarmy/search-tree-data-structure search_tree_data_structure
 python3 main.py
 
 ```
