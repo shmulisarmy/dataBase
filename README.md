@@ -26,3 +26,6 @@ python3 main.py
 
 ```
 
+
+## Supporting libraries (self made dependencies)
+https://github.com/shmulisarmy/search-tree-data-structure
