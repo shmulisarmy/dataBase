@@ -20,7 +20,7 @@ As of now this project is just a proof concept (written in python), when the pro
 # Run commands
 ```bash
 
-git clone https://github.com/shmulisarmy/dataBase/edit/main/README.md
+git clone https://github.com/shmulisarmy/dataBase
 cd dataBase
 pip install -r requirements.txt
 git clone https://github.com/shmulisarmy/search-tree-data-structure search_tree_data_structure
