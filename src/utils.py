@@ -11,6 +11,10 @@ def between(fieldValue: str, bothCompareValues: str):
     return int(fieldValue) >= int(a) and int(fieldValue) <= int(b)
 
 
+def indexable(expression: str):
+    return expression.split(" ", 1)[0] == "=="
+
+
 
 
 evaluators = {

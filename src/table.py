@@ -78,31 +78,26 @@ class Table:
                 print(value.center(self.column_lengths[i]), end=" ")
             print()
 
-    def select(self, *fields: str, order_by: Optional[str] = None, **conditions: str) -> List[List[str]]:
-        """
-        Retrieve rows matching specified criteria and optional ordering.
-        """
-        for field in fields:
-            if not field in self.columns:
-                raise ValueError(f"Column '{field}' does not exist")
 
+    def findValidRows(self, conditions: Dict[str, str]) -> List[tuple[str]]:
         for field in conditions:
             if not field in self.columns:
                 raise ValueError(f"Column '{field}' does not exist")
             
-        """we setselecting_from to self.data but then we see if\n
+        """we set selecting_from to self.data but then we see if\n
         we can find a field that can be used to narrow down the search"""
 
+        
         selecting_from = self.data
         if self.mapped_columns:
-            first_search_field_candidates = [
+            first_search_field_candidates: List[str] = [
                 field for field in conditions
-                if field in self.mapped_columns and not rules.is_valid_expression(conditions[field])
+                if field in self.mapped_columns and utils.indexable(conditions[field])
             ]
 
             def find_length(field: str) -> int:
-                value = conditions[field]
-                return len(self.mapped_columns[field].get(value, []))
+                condition = conditions[field]
+                return len(self.mapped_columns[field].get(condition, []))
 
             if first_search_field_candidates:
                 best_first_search_field = min(first_search_field_candidates, key=find_length)
@@ -111,17 +106,33 @@ class Table:
                 del conditions[best_first_search_field]
 
         ids_of_return_rows: List[int] = []
-        return_value: List[List[str]] = []
 
         for row in selecting_from:
-            cellValue = row[self.field_indexes[field]]
-            condition: str = conditions[field]
+            for condition in conditions:
+                cellValue = row[self.field_indexes[condition]]
+                condition: str = conditions[condition]
+                if not utils.validate(condition, cellValue):
+                    break
 
-            if all(utils.validate(condition, cellValue) for field in conditions):
-                ids_of_return_rows.append(selecting_from.index(row))
+            ids_of_return_rows.append(selecting_from.index(row))
+
+        return ids_of_return_rows
+    def select(self, *fields: str, order_by: Optional[str] = None, **conditions: str) -> List[List[str]]:
+        """
+        Retrieve rows matching specified criteria and optional ordering.
+        """
+        for field in fields:
+            if not field in self.columns:
+                raise ValueError(f"Column '{field}' does not exist")
+
+        
+
+        ids_of_return_rows: List[int] = self.findValidRows(conditions)
+        return_value: List[List[str]] = []
+
 
         for row_id in ids_of_return_rows:
-            return_value.append([selecting_from[row_id][self.field_indexes[field]] for field in fields])
+            return_value.append([self.data[row_id][self.field_indexes[field]] for field in fields])
 
         return return_value
 
