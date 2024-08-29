@@ -1,5 +1,5 @@
-import rules
-import utils
+from . import rules
+from . import utils
 from sortedcontainers import SortedDict
 from typing import Dict, List, Optional, Union
 
@@ -17,15 +17,7 @@ class Table:
         self.row_count: int = 0
 
         for field, length in columns.items():
-            self.add_column(field, length)
-
-    def is_field_allowed(self, field: str) -> bool:
-        """
-        Check if a field name is valid in the table.
-        """
-        if rules.is_valid_expression(field):
-            _, field = field.split(" ", 1)
-        return field in self.columns
+            self.add_column(field, length)        
 
     def map_column(self, field: str) -> None:
         """
@@ -89,13 +81,14 @@ class Table:
     def select(self, *fields: str, order_by: Optional[str] = None, **conditions: str) -> List[List[str]]:
         """
         Retrieve rows matching specified criteria and optional ordering.
+        param fields: List of fields to return from columns
         """
         for field in fields:
-            if not self.is_field_allowed(field):
+            if not field in self.columns:
                 raise ValueError(f"Column '{field}' does not exist")
 
         for field in conditions:
-            if not self.is_field_allowed(field):
+            if not field in self.columns:
                 raise ValueError(f"Column '{field}' does not exist")
 
         selecting_from = self.data
@@ -130,11 +123,11 @@ class Table:
         Modify existing rows based on specified conditions.
         """
         for field in updates:
-            if not self.is_field_allowed(field):
+            if not field in self.columns:
                 raise ValueError(f"Column '{field}' does not exist")
 
         for field in conditions:
-            if not self.is_field_allowed(field):
+            if not field in self.columns:
                 raise ValueError(f"Column '{field}' does not exist")
 
         selecting_from = self.data

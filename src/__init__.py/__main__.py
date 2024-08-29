@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING
-from dataBase import DataBase
+from .dataBase import DataBase
 # from search_tree_data_structure import SearchTree
 
 
 if TYPE_CHECKING:
-    from table import Table
+    from .table import Table
 
 db = DataBase("test")
 # Example usage
