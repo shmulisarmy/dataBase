@@ -89,6 +89,9 @@ class Table:
         for field in conditions:
             if not field in self.columns:
                 raise ValueError(f"Column '{field}' does not exist")
+            
+        """we setselecting_from to self.data but then we see if\n
+        we can find a field that can be used to narrow down the search"""
 
         selecting_from = self.data
         if self.mapped_columns:
@@ -104,12 +107,17 @@ class Table:
             if first_search_field_candidates:
                 best_first_search_field = min(first_search_field_candidates, key=find_length)
                 selecting_from = self.mapped_columns[best_first_search_field][conditions[best_first_search_field]]
+                # becuase we're allready using it to validate
+                del conditions[best_first_search_field]
 
         ids_of_return_rows: List[int] = []
         return_value: List[List[str]] = []
 
         for row in selecting_from:
-            if all(utils.valid_field(conditions[field], row[self.field_indexes[field]]) for field in conditions):
+            cellValue = row[self.field_indexes[field]]
+            condition: str = conditions[field]
+
+            if all(utils.validate(condition, cellValue) for field in conditions):
                 ids_of_return_rows.append(selecting_from.index(row))
 
         for row_id in ids_of_return_rows:
@@ -147,7 +155,7 @@ class Table:
         ids_of_update_rows: List[int] = []
 
         for row in selecting_from:
-            if all(utils.valid_field(conditions[field], row[self.field_indexes[field]]) for field in conditions):
+            if all(utils.validate(conditions[field], row[self.field_indexes[field]]) for field in conditions):
                 ids_of_update_rows.append(selecting_from.index(row))
 
         for row_id in ids_of_update_rows:

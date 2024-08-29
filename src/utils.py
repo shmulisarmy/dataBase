@@ -24,7 +24,7 @@ evaluators = {
         }
 
 
-def valid_field(validation_string: str, value: str) -> bool:
+def validate(validation_string: str, value: str) -> bool:
     """
     Validate a value against a given condition.
     """
