@@ -31,3 +31,12 @@ python3 __main__.py
 
 ## Supporting libraries (self made dependencies)
 https://github.com/shmulisarmy/search-tree-data-structure
+
+
+
+
+---
+
+
+sample code at https://github.com/shmulisarmy/dataBase/blob/main/src/__main__.py
+
