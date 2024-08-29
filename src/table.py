@@ -19,14 +19,6 @@ class Table:
         for field, length in columns.items():
             self.add_column(field, length)
 
-    def is_field_allowed(self, field: str) -> bool:
-        """
-        Check if a field name is valid in the table.
-        """
-        if rules.is_valid_expression(field):
-            _, field = field.split(" ", 1)
-        return field in self.columns
-
     def map_column(self, field: str) -> None:
         """
         Prepare a column for mapping by its values.
@@ -86,42 +78,61 @@ class Table:
                 print(value.center(self.column_lengths[i]), end=" ")
             print()
 
+
+    def findValidRows(self, conditions: Dict[str, str]) -> List[tuple[str]]:
+        for field in conditions:
+            if not field in self.columns:
+                raise ValueError(f"Column '{field}' does not exist")
+            
+        """we set selecting_from to self.data but then we see if\n
+        we can find a field that can be used to narrow down the search"""
+
+        
+        selecting_from = self.data
+        if self.mapped_columns:
+            first_search_field_candidates: List[str] = [
+                field for field in conditions
+                if field in self.mapped_columns and utils.indexable(conditions[field])
+            ]
+
+            def find_length(field: str) -> int:
+                condition = conditions[field]
+                return len(self.mapped_columns[field].get(condition, []))
+
+            if first_search_field_candidates:
+                best_first_search_field = min(first_search_field_candidates, key=find_length)
+                selecting_from = self.mapped_columns[best_first_search_field][conditions[best_first_search_field]]
+                # becuase we're allready using it to validate
+                del conditions[best_first_search_field]
+
+        ids_of_return_rows: List[int] = []
+
+        for row in selecting_from:
+            for condition in conditions:
+                cellValue = row[self.field_indexes[condition]]
+                condition: str = conditions[condition]
+                if not utils.validate(condition, cellValue):
+                    break
+
+            ids_of_return_rows.append(selecting_from.index(row))
+
+        return ids_of_return_rows
     def select(self, *fields: str, order_by: Optional[str] = None, **conditions: str) -> List[List[str]]:
         """
         Retrieve rows matching specified criteria and optional ordering.
         """
         for field in fields:
-            if not self.is_field_allowed(field):
+            if not field in self.columns:
                 raise ValueError(f"Column '{field}' does not exist")
 
-        for field in conditions:
-            if not self.is_field_allowed(field):
-                raise ValueError(f"Column '{field}' does not exist")
+        
 
-        selecting_from = self.data
-        if self.mapped_columns:
-            first_search_field_candidates = [
-                field for field in conditions
-                if field in self.mapped_columns and not rules.is_valid_expression(conditions[field])
-            ]
-
-            def find_length(field: str) -> int:
-                value = conditions[field]
-                return len(self.mapped_columns[field].get(value, []))
-
-            if first_search_field_candidates:
-                best_first_search_field = min(first_search_field_candidates, key=find_length)
-                selecting_from = self.mapped_columns[best_first_search_field][conditions[best_first_search_field]]
-
-        ids_of_return_rows: List[int] = []
+        ids_of_return_rows: List[int] = self.findValidRows(conditions)
         return_value: List[List[str]] = []
 
-        for row in selecting_from:
-            if all(utils.valid_field(conditions[field], row[self.field_indexes[field]]) for field in conditions):
-                ids_of_return_rows.append(selecting_from.index(row))
 
         for row_id in ids_of_return_rows:
-            return_value.append([selecting_from[row_id][self.field_indexes[field]] for field in fields])
+            return_value.append([self.data[row_id][self.field_indexes[field]] for field in fields])
 
         return return_value
 
@@ -130,11 +141,11 @@ class Table:
         Modify existing rows based on specified conditions.
         """
         for field in updates:
-            if not self.is_field_allowed(field):
+            if not field in self.columns:
                 raise ValueError(f"Column '{field}' does not exist")
 
         for field in conditions:
-            if not self.is_field_allowed(field):
+            if not field in self.columns:
                 raise ValueError(f"Column '{field}' does not exist")
 
         selecting_from = self.data
@@ -155,7 +166,7 @@ class Table:
         ids_of_update_rows: List[int] = []
 
         for row in selecting_from:
-            if all(utils.valid_field(conditions[field], row[self.field_indexes[field]]) for field in conditions):
+            if all(utils.validate(conditions[field], row[self.field_indexes[field]]) for field in conditions):
                 ids_of_update_rows.append(selecting_from.index(row))
 
         for row_id in ids_of_update_rows:

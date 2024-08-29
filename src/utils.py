@@ -11,6 +11,10 @@ def between(fieldValue: str, bothCompareValues: str):
     return int(fieldValue) >= int(a) and int(fieldValue) <= int(b)
 
 
+def indexable(expression: str):
+    return expression.split(" ", 1)[0] == "=="
+
+
 
 
 evaluators = {
@@ -24,7 +28,7 @@ evaluators = {
         }
 
 
-def valid_field(validation_string: str, value: str) -> bool:
+def validate(validation_string: str, value: str) -> bool:
     """
     Validate a value against a given condition.
     """
