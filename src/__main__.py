@@ -7,6 +7,8 @@ if TYPE_CHECKING:
     from table import Table
 
 db = DataBase("test")
+
+
 # Example usage
 parties: 'Table' = db.createTable("parties", name=10, people_in_party=3)
 users: 'Table' = db.createTable("users", name=10, age=3, email=30, city=20, country=20, worth=10, __part__id=3)

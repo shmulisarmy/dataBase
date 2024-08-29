@@ -19,14 +19,6 @@ class Table:
         for field, length in columns.items():
             self.add_column(field, length)
 
-    def is_field_allowed(self, field: str) -> bool:
-        """
-        Check if a field name is valid in the table.
-        """
-        if rules.is_valid_expression(field):
-            _, field = field.split(" ", 1)
-        return field in self.columns
-
     def map_column(self, field: str) -> None:
         """
         Prepare a column for mapping by its values.
@@ -91,11 +83,11 @@ class Table:
         Retrieve rows matching specified criteria and optional ordering.
         """
         for field in fields:
-            if not self.is_field_allowed(field):
+            if not field in self.columns:
                 raise ValueError(f"Column '{field}' does not exist")
 
         for field in conditions:
-            if not self.is_field_allowed(field):
+            if not field in self.columns:
                 raise ValueError(f"Column '{field}' does not exist")
 
         selecting_from = self.data
@@ -130,11 +122,11 @@ class Table:
         Modify existing rows based on specified conditions.
         """
         for field in updates:
-            if not self.is_field_allowed(field):
+            if not field in self.columns:
                 raise ValueError(f"Column '{field}' does not exist")
 
         for field in conditions:
-            if not self.is_field_allowed(field):
+            if not field in self.columns:
                 raise ValueError(f"Column '{field}' does not exist")
 
         selecting_from = self.data
