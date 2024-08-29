@@ -24,7 +24,7 @@ git clone https://github.com/shmulisarmy/dataBase
 cd dataBase
 pip install -r requirements.txt
 git clone https://github.com/shmulisarmy/search-tree-data-structure search_tree_data_structure
-python3 main.py
+python3 __main__.py
 
 ```
 

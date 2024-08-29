@@ -2,7 +2,7 @@ pytest
 
 if [ $? -eq 0 ]; then
     git add *
-    commitMessage= read -p "commit message: "
+    read -p "commit message: " commitMessage
     git commit -m "$commitMessage"
     git push
 else
