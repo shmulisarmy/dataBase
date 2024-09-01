@@ -14,7 +14,7 @@ class expression:
                  self.partialIndexFunction = partialIndexFunction
                  self.indexRangeFunction = indexRangeFunction
 
-                 
+
                  expression.isinstances[operator] = self
     
     
@@ -53,11 +53,16 @@ def initialMapRangeFunction(data: dict, field: str, startRange: any, endRange: a
     return data.get(field, {}).irange(startRange, endRange)
 
     
+
+
     
 expression("==", singleRowValidater=lambda a, b: a == b,
             partialIndexFunction=initialVanilaIndexFunction)
 
 
 expression(">=", singleRowValidater=lambda x, y: int(x) >= int(y),
-            partialIndexFunction=initialVanilaIndexFunction,
+            initialIndexRangeFunction=initialMapRangeFunction)
+
+
+expression(">", singleRowValidater=lambda x, y: int(x) > int(y),
             initialIndexRangeFunction=initialMapRangeFunction)
