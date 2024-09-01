@@ -14,9 +14,6 @@ def test_select():
     parties: 'Table' = test_db.createTable("parties", name=10, people_in_party=3)
     users: 'Table' = test_db.createTable("users", name=10, age=3, email=30, city=20, country=20, worth=10, __party__id=3)
     users.defaults = {"age": "0", "worth": "0", "__party__id": "1"}
-    users.map_column("name")
-    users.map_column("age")
-    users.map_column("worth")
 
     users.add_row(name="John", age="25", email="VrXrL@example.com", city="New York", country="USA", worth="1000000")
     users.add_row(name="Jane", age="25", email="Xqg5v@example.com", city="London", country="UK", worth="300")
@@ -31,9 +28,6 @@ def test_update():
     parties: 'Table' = test_db.createTable("parties", name=10, people_in_party=3)
     users: 'Table' = test_db.createTable("users", name=10, age=3, email=30, city=20, country=20, worth=10, __party__id=3)
     users.defaults = {"age": "0", "worth": "0", "__party__id": "1"}
-    users.map_column("name")
-    users.map_column("age")
-    users.map_column("worth")
 
     users.add_row(name="John", age="25", email="VrXrL@example.com", city="New York", country="USA", worth="1000000")
     users.add_row(name="Jane", age="25", email="Xqg5v@example.com", city="London", country="UK", worth="300")
