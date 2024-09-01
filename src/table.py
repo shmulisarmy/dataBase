@@ -30,7 +30,7 @@ class Table:
         Prepare a column for mapping by its values.
         """
         column = self.columns.get(field)
-        if not Column:  
+        if not column:  
             raise ValueError(f"Column '{field}' does not exist")
 
         column.index()
