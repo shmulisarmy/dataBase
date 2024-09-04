@@ -157,34 +157,8 @@ class Table:
         """
         Modify existing rows based on specified conditions.
         """
-        for field in updates:
-            if not field in self.columns:
-                raise ValueError(f"Column '{field}' does not exist")
 
-        for field in conditions:
-            if not field in self.columns:
-                raise ValueError(f"Column '{field}' does not exist")
-
-        selecting_from = self.data
-        if self.mapped_columns:
-            first_search_field_candidates = [
-                field for field in conditions
-                if field in self.mapped_columns and not rules.is_valid_expression(conditions[field])
-            ]
-
-            def find_length(field: str) -> int:
-                value = conditions[field]
-                return len(self.mapped_columns[field].get(value, []))
-
-            if first_search_field_candidates:
-                best_first_search_field = min(first_search_field_candidates, key=find_length)
-                selecting_from = self.mapped_columns[best_first_search_field][conditions[best_first_search_field]]
-
-        ids_of_update_rows: List[int] = []
-
-        for row in selecting_from:
-            if all(utils.validate(conditions[field], row[self.field_indexes[field]]) for field in conditions):
-                ids_of_update_rows.append(selecting_from.index(row))
+        ids_of_update_rows: List[int] = self.findValidRows(conditions)
 
         for row_id in ids_of_update_rows:
             for field, new_value in updates.items():
