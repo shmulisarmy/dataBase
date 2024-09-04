@@ -26,4 +26,4 @@ users.update({"age": "30000"}, worth="> 3000")
 
 users.display()
 
-print(users.select("name", "age", worth="> 3000", order_by="worth"))  # for all of the results the age should be 30000
+print(users.select("name", "age", worth="> 3000"))  # for all of the results the age should be 30000

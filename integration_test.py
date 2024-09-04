@@ -19,8 +19,8 @@ def test_select():
     users.add_row(name="Jane", age="25", email="Xqg5v@example.com", city="London", country="UK", worth="300")
     users.add_row(name="Bob", age="40", email="Xqg5v@example.com", city="Paris", country="France", worth="230000")
 
-    assert users.select("name", "age", worth="> 3000", order_by="worth") == [['John', '25'], ['Bob', '40']]
-    assert users.select("name", "age", worth="< 3000", order_by="worth") == [['Jane', '25']]
+    assert users.select("name", "age", worth="> 3000") == [['John', '25'], ['Bob', '40']]
+    assert users.select("name", "age", worth="< 3000") == [['Jane', '25']]
 
 
 def test_update():
@@ -34,7 +34,7 @@ def test_update():
     users.add_row(name="Bob", age="40", email="Xqg5v@example.com", city="Paris", country="France", worth="230000")
 
     users.update({"age": "30000"}, worth="> 3000")
-    assert users.select("name", "age", worth="> 3000", order_by="worth") == [['John', '30000'], ['Bob', '30000']]
+    assert users.select("name", "age", worth="> 3000") == [['John', '30000'], ['Bob', '30000']]
 
 
 

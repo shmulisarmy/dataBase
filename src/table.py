@@ -134,7 +134,7 @@ class Table:
                 ids_of_return_rows.append(selecting_from.index(row))
 
         return ids_of_return_rows
-    def select(self, *fields: str, order_by: Optional[str] = None, **conditions: str) -> List[List[str]]:
+    def select(self, *fields: str, **conditions: str) -> List[List[str]]:
         """
         Retrieve rows matching specified criteria and optional ordering.
         """
